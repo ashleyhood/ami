@@ -9,6 +9,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Events\Dispatcher;
 use React\EventLoop\LoopInterface;
 use Clue\React\Ami\Protocol\Response;
+use Clue\React\Ami\Protocol\Event;
+use Clue\React\Ami\Protocol\Collection;
 use React\Promise\Deferred;
 
 abstract class AmiAbstract extends Command
@@ -80,9 +82,9 @@ abstract class AmiAbstract extends Command
         return false;
     }
 
-    protected function collectEvents($command, $expectedEndEvent)
+    protected function collectEvents($command, $expectedEndEvent, array $options = [])
     {
-        $req = $this->client->createAction($command);
+        $req = $this->client->createAction($command, $options);
         $ret = $this->client->request($req);
         $id = $req->getActionId();
 
@@ -133,7 +135,7 @@ abstract class AmiAbstract extends Command
         $host = $options['host'] ?? '';
         $port = isset($options['port']) ? ':'.$options['port'] : '';
         $username = $options['username'] ?? '';
-        $secret = isset($options['secret']) ? ':'.$options['secret']  : '';
+        $secret = isset($options['secret']) ? ':'.$options['secret'] : '';
         $secret = ($username || $secret) ? "$secret@" : '';
 
         return $scheme.$username.$secret.$host.$port;

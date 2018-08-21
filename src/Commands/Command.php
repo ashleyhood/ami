@@ -106,7 +106,7 @@ class Command extends SymfonyCommand
      */
     public function runningInConsole()
     {
-        return php_sapi_name() == 'cli';
+        return 'cli' == php_sapi_name();
     }
 
     /**

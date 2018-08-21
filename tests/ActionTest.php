@@ -15,7 +15,7 @@ class ActionTest extends TestCase
                 'Message' => 'Channel status will follow',
             ],
         ];
-        $this->events->listen('ami.action.sended', function () use ($messages) {
+        $this->events->listen('ami.action.sent', function () use ($messages) {
             $this->assertTrue(true);
             $this->stream->emit('data', ["Asterisk Call Manager/1.3\r\n"]);
             foreach ($messages as $lines) {
@@ -26,7 +26,7 @@ class ActionTest extends TestCase
                 $this->stream->emit('data', ["{$message}\r\n"]);
             }
         });
-        $this->events->listen('ami.action.responsed', function ($console, $action, Response $response) {
+        $this->events->listen('ami.action.responded', function ($console, $action, Response $response) {
             $this->assertEquals('Status', $action);
             $this->assertEquals($response->getFields(), [
                 'Response' => 'Success',

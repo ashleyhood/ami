@@ -6,7 +6,6 @@ use Exception;
 use Clue\React\Ami\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Clue\React\Ami\Protocol\Event;
 use Clue\React\Ami\Protocol\Response;
 use Clue\React\Ami\Protocol\Collection;
 
@@ -47,7 +46,7 @@ class AmiAction extends AmiAbstract
 
     public function status($options)
     {
-        $this->collector('Status', 'statusComplete');
+        $this->collector('Status', 'StatusComplete');
     }
 
     public function client(Client $client)
@@ -76,7 +75,7 @@ class AmiAction extends AmiAbstract
         if (method_exists(__CLASS__, $method)) {
             $this->$method($options);
         } elseif ($collectionEndEvent) {
-            $collectionEndEvent = $collectionEndEvent !== 'auto' ? $collectionEndEvent : $action.'Complete';
+            $collectionEndEvent = 'auto' !== $collectionEndEvent ? $collectionEndEvent : $action.'Complete';
             $this->collector($action, $collectionEndEvent);
         } else {
             $this->sender($action, $options);

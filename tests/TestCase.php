@@ -9,7 +9,7 @@ use Illuminate\Container\Container;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Console\Application as Console;
 
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \React\EventLoop\LoopInterface
@@ -41,7 +41,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         (new EventServiceProvider($app))->register();
         (new AmiServiceProvider($app))->register();
         $this->loop = $app[LoopInterface::class];
-        $this->loop->nextTick(function () {
+        $this->loop->futureTick(function () {
             if (!$this->running) {
                 $this->loop->stop();
             }
