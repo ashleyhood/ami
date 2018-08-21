@@ -39,9 +39,29 @@ class AmiAction extends AmiAbstract
         'Value',
     ];
 
+    public function bridge($options)
+    {
+        $this->sender('Bridge', $options);
+    }
+
     public function listCommands($options)
     {
         $this->sender('ListCommands', $options);
+    }
+
+    public function queueAdd($options)
+    {
+        $this->sender('QueueAdd', $options);
+    }
+
+    public function queueRemove($options)
+    {
+        $this->sender('QueueRemove', $options);
+    }
+
+    public function queueStatus($options)
+    {
+        $this->collector('QueueStatus', 'QueueStatusComplete');
     }
 
     public function status($options)
@@ -181,9 +201,9 @@ class AmiAction extends AmiAbstract
         );
     }
 
-    private function collector($action, $expectedEndEvent)
+    private function collector($action, $expectedEndEvent, array $options = [])
     {
-        $collector = $this->collectEvents($action, $expectedEndEvent);
+        $collector = $this->collectEvents($action, $expectedEndEvent, $options);
 
         $this->dispatcher->fire('ami.action.sent', [$this, $action, $collector]);
 
