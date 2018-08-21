@@ -1,5 +1,5 @@
 {
-    "name": "enniel/ami",
+    "name": "ashleyhood/ami",
     "type": "library",
     "description": "Provide asterisk ami to laravel",
     "keywords": [
@@ -7,7 +7,7 @@
         "Ami",
         "Asterisk"
     ],
-    "homepage": "https://github.com/Enniel/Ami",
+    "homepage": "https://github.com/ashleyhood/Ami",
     "license": "MIT",
     "authors": [
         {
@@ -24,9 +24,8 @@
         "react/dns": "~0.4.3",
         "react/stream": "~0.4.6",
         "react/event-loop": "~0.4.2",
-        "react/socket-client": "~0.4.6",
-        "clue/ami-react": "~0.3.1",
-        "jackkum/phppdu": "~1.2.10"
+        "clue/ami-react": "~0.4.0",
+        "rmoore/phppdu": "~1.3.01"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~2.0.0",
@@ -56,8 +55,10 @@
         "bin/ami"
     ],
     "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
+        "laravel": {
+            "providers": [
+                "Enniel\\Ami\\Providers\\AmiServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",

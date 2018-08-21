@@ -2,18 +2,17 @@
 
 namespace Enniel\Ami\Providers;
 
-use Enniel\Ami\Factory;
+use Clue\React\Ami\Factory;
 use Enniel\Ami\Commands\AmiCli;
 use Enniel\Ami\Commands\AmiSms;
 use Enniel\Ami\Commands\AmiUssd;
-use React\SocketClient\Connector;
+use React\Socket\Connector;
 use Enniel\Ami\Commands\AmiAction;
 use Enniel\Ami\Commands\AmiListen;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\StreamSelectLoop;
 use Illuminate\Support\ServiceProvider;
-use React\SocketClient\ConnectorInterface;
-use React\Dns\Resolver\Factory as DnsResolver;
+use React\Socket\ConnectorInterface;
 
 class AmiServiceProvider extends ServiceProvider
 {
@@ -132,7 +131,7 @@ class AmiServiceProvider extends ServiceProvider
         $this->app->singleton(ConnectorInterface::class, function ($app) {
             $loop = $app[LoopInterface::class];
 
-            return new Connector($loop, (new DnsResolver())->create('8.8.8.8', $loop));
+            return new Connector($loop, ['dns' => '1.1.1.1']);
         });
         $this->app->alias(ConnectorInterface::class, 'ami.connector');
     }

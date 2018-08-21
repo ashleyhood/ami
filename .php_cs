@@ -8,6 +8,6 @@ $rules = [
 ];
 
 return Config::create()
-    ->setFinder(Finder::create()->in(__DIR__))
+    ->finder(Finder::create()->in(__DIR__))
     ->setRules($rules)
     ->setUsingCache(true);

@@ -2,7 +2,7 @@
 
 namespace Enniel\Ami\Tests;
 
-use React\Stream\Stream;
+use React\Socket\ConnectionInterface;
 use Illuminate\Config\Repository;
 use React\EventLoop\LoopInterface;
 use Illuminate\Container\Container;
@@ -17,7 +17,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected $loop;
 
     /**
-     * @var \React\Stream\Stream
+     * @var \React\Socket\ConnectionInterface
      */
     protected $stream;
 
@@ -46,7 +46,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
                 $this->loop->stop();
             }
         });
-        $this->stream = $app[Stream::class];
+        $this->stream = $app[ConnectionInterface::class];
         $this->events = $app['events'];
         $this->app = $app;
     }
@@ -60,5 +60,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function console($command, array $options = [])
     {
         return (new Console($this->app, $this->events, '5.3'))->call($command, $options);
+    }
+
+    private function createStreamMock()
+    {
+        return $this->getMockBuilder('React\Socket\Connection')->disableOriginalConstructor()->setMethods(array('write', 'close'))->getMock();
     }
 }

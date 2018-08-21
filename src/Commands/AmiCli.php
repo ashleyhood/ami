@@ -2,6 +2,7 @@
 
 namespace Enniel\Ami\Commands;
 
+use Exception;
 use Clue\React\Ami\Client;
 use Clue\React\Ami\Protocol\Response;
 
@@ -12,13 +13,14 @@ class AmiCli extends AmiAbstract
      *
      * @var string
      */
-    protected $signature = 'ami:cli
+    protected $signature = 'ami:client
                                 {--host= : Asterisk ami host}
                                 {--port= : Asterisk ami port}
                                 {--username= : Asterisk ami username}
                                 {--secret= : Asterisk ami secret key}
-                                {cli? : Command}
+                                {client? : Command}
                                 {--autoclose : Close after call command}
+                                {--json : Output as json}
                             ';
 
     /**
@@ -26,7 +28,7 @@ class AmiCli extends AmiAbstract
      *
      * @var string
      */
-    protected $description = 'Send command from asterisk ami cli';
+    protected $description = 'Send command from asterisk ami client';
 
     protected $exit = [
         'quit', 'exit',
@@ -36,8 +38,8 @@ class AmiCli extends AmiAbstract
     {
         parent::client($client);
         // client connected and authenticated
-        $this->info('starting ami cli interface');
-        $command = $this->argument('cli');
+        $this->info('starting ami client interface');
+        $command = $this->argument('client');
         if (!empty($command)) {
             $this->sendCommand($command);
         } else {
@@ -45,7 +47,7 @@ class AmiCli extends AmiAbstract
         }
         $client->on('close', function () {
             // the connection to the AMI just closed
-            $this->info('closed ami cli');
+            $this->info('closed ami client');
         });
     }
 
@@ -67,11 +69,40 @@ class AmiCli extends AmiAbstract
 
     public function writeResponse(Response $response)
     {
-        $this->line($response->getCommandOutput());
+        $json = $this->option('json');
+        if ($json) {
+            $this->line(json_encode($response->getFields()));
+        } else {
+            $this->line($response->getFieldValue('Output'));
+        }
+
         $autoclose = $this->option('autoclose');
         if ($autoclose) {
             $this->stop();
+        } else {
+            $this->writeInterface();
         }
-        $this->writeInterface();
+    }
+
+    public function writeException(Exception $e)
+    {
+        $response = null;
+
+        if (method_exists($e, 'getResponse')) {
+            $response = $e->getResponse();
+        }
+
+        $json = $this->option('json');
+
+        if ($json) {
+            if ($response) {
+                $this->line(json_encode($response->getFields()));
+            } else {
+                $this->line(json_encode(['error' => $e->getMessage(), 'code' => $e->getCode()]));
+            }
+        } else {
+            $this->warn($e->getMessage());
+        }
+        $this->stop();
     }
 }
